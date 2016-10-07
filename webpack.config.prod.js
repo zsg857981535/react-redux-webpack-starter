@@ -12,7 +12,7 @@ const config = {
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: '[chunkhash:8].bundle.js',
-    publicPath: '/'
+    publicPath: '/'  //静态资源（图片，字体文件）打包后的引用路径，修改为服务端host:port
   },
   resolve: {
     extensions: ['', '.js', '.jsx']
@@ -38,22 +38,26 @@ const config = {
     ]
   },
   plugins: [
+  //定义一些全局变量
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production'),
       __DEV__: JSON.stringify(JSON.parse(process.env.DEBUG || 'false'))
     }),
+    //检查重复代码，减少打包体积
     new webpack.optimize.DedupePlugin(),
+    //代码混淆
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false
       }
     }),
+    //自动创建html文件
     new HtmlWebpackPlugin({
-      template: 'app/index.tpl.html',
+      template: 'app/index.tpl.html',//模板
       filename: 'index.html',
       inject: true
     }),
-    new OpenBrowserPlugin({ url: 'http://localhost:9090/' })
+    new OpenBrowserPlugin({ url: 'http://localhost:9090/' })//自动打开浏览器
   ]
 };
 
